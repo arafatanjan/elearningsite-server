@@ -3,7 +3,9 @@ const cors = require("cors")
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
 // const bodyParser = require("body-parser")
+
 const app = express()
+
 const Routes = require("./routes/route.js")
 const connect=require('./models/Conn.js')
 
@@ -17,7 +19,7 @@ dotenv.config();
 
 app.use(express.json({ limit: '10mb' }))
 // app.use('/api', Routes)
-app.use(cors())
+
 
 // mongoose
 //     .connect(process.env.MONGO_URL, {
@@ -50,7 +52,7 @@ mongoose
 // }).catch(error => {
 //     console.log("Invalid Database Connection");
 // })
-
+app.use(cors());
 app.use('/', Routes);
 
 app.listen(PORT, () => {
