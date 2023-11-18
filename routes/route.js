@@ -117,6 +117,14 @@ router.delete("/Subject/:id", deleteSubject)
 router.delete("/Subjects/:id", deleteSubjects)
 router.delete("/SubjectsClass/:id", deleteSubjectsByClass)
 
+//tquiz
+router.route('/Teacher/quiz')
+.post(quizController.insertQuestions) /** POST Request */       
+
+
+
+//quiz
+
 router.route('/questions')
 .get(quizController.getQuestions) /** GET Request */
 .post(quizController.insertQuestions) /** POST Request */       

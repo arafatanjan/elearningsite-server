@@ -33,13 +33,25 @@ module.exports.getQuestions=async function getQuestions(req, res){
 
 module.exports.insertQuestions= async function insertQuestions(req, res){
     try {
-      // console.log(question);
-     const w= Questions.insertMany({ question ,answer}, function(err, data){
-            res.json(answer)
-        })
-    } catch (error) {
-        res.json({ error })
+    //    console.log("Post Api");
+       console.log(req.body);
+    //    res.send("Res Post Api");
+    //    console.log(question);
+    const { question, answer, properties } = req.body;
+      
+    const insertedQuestions = await Questions.insertMany({properties,question ,answer});
+
+    // Log the inserted questions (you may want to handle this data differently)
+    console.log('Inserted Questions:', insertedQuestions);
+
+    // Respond with success message or appropriate response
+    res.json({ message: 'Questions inserted successfully' });
     }
+    catch (error) {
+        // Handle any errors that occur during the insertion process
+        console.error('Error inserting questions:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
 }
 
 // module.exports.insertQuestions=async function insertQuestions(req, res) {
