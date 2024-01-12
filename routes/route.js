@@ -26,6 +26,52 @@ const {
 const { subjectCreate, classSubjects, deleteSubjectsByClass, getSubjectDetail, deleteSubject, freeSubjectList, allSubjects, deleteSubjects } = require('../controllers/subject-controller.js');
 const { teacherRegister, teacherLogIn, getTeachers, getTeacherDetail, deleteTeachers, deleteTeachersByClass, deleteTeacher, updateTeacherSubject, teacherAttendance } = require('../controllers/teacher-controller.js');
 const quizController = require('../controllers/quiz-controller.js');
+const mediaController = require("../controllers/media-controller.js");
+const MediaPlayCountController = require("../controllers/MediaPlayCountController.js");
+const upload = require('../middleware/upload.js');
+
+
+  //get all media
+router.get("/api/v1/media/all", mediaController.getAll);
+
+//post create new media
+router.post(
+  "/api/v1/media/create",
+  upload.fields
+  ([
+    {
+      name: "videos",
+      maxCount: 5,
+    },
+  ]),
+  mediaController.create
+);
+
+//post playcount
+router.post('/updatePlayCount', MediaPlayCountController.getAll); 
+
+
+//post create new media
+// router.post(
+//   "/create",
+//   upload?.fields([
+//     {
+//       name: "videos",
+//       maxCount: 5,
+//     },
+//   ]),(req, res) => {
+//     if (req.file) {
+//       // If the file is successfully uploaded, you can access it using req.file
+//       res.status(200).json({ message: 'File uploaded successfully', file: req.file });
+//     } else {
+//       // Handle the case where the file upload failed
+//       res.status(400).json({ message: 'File upload failed' });
+//   }
+// },
+//   mediaController.create
+// );
+
+
 // Admin
 router.post('/AdminReg', adminRegister);
 router.post('/AdminLogin', adminLogIn);
@@ -88,7 +134,7 @@ router.put("/Notice/:id", updateNotice)
 
 // Complain
 
-router.post('/ComplainCreate', complainCreate);
+router.post('/ComplainCreate', complainCreate );
 
 router.get('/ComplainList/:id', complainList);
 

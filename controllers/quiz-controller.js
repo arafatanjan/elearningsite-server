@@ -115,7 +115,7 @@ module.exports.getResult= async function getResult(req, res){
 
 module.exports.storeResult=async function storeResult(req, res) {
   try {
-    const { username, result, attempts, points, achieved } = req.body;
+    const {property, username, result, attempts, points, achieved } = req.body;
 
     // Check if result is provided
     if (!result) {
@@ -124,6 +124,7 @@ module.exports.storeResult=async function storeResult(req, res) {
 
     // Create an object with the data to be saved
     const resultData = {
+      property,
       username,
       result,
       attempts,
