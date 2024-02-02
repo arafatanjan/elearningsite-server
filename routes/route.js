@@ -19,15 +19,18 @@ const {
     studentAttendance,
     deleteStudentsByClass,
     updateExamResult,
+    updateProgessResult,
     clearAllStudentsAttendanceBySubject,
     clearAllStudentsAttendance,
     removeStudentAttendanceBySubject,
     removeStudentAttendance } = require('../controllers/student_controller.js');
+    
 const { subjectCreate, classSubjects, deleteSubjectsByClass, getSubjectDetail, deleteSubject, freeSubjectList, allSubjects, deleteSubjects } = require('../controllers/subject-controller.js');
 const { teacherRegister, teacherLogIn, getTeachers, getTeacherDetail, deleteTeachers, deleteTeachersByClass, deleteTeacher, updateTeacherSubject, teacherAttendance } = require('../controllers/teacher-controller.js');
 const quizController = require('../controllers/quiz-controller.js');
 const mediaController = require("../controllers/media-controller.js");
 const MediaPlayCountController = require("../controllers/MediaPlayCountController.js");
+const PlayCountController = require("../controllers/PlayCountController.js");
 const upload = require('../middleware/upload.js');
 
 
@@ -47,8 +50,8 @@ router.post(
   mediaController.create
 );
 
-//post playcount
-router.post('/updatePlayCount', MediaPlayCountController.getAll); 
+//put playcount
+router.put('/updatePlayCount/:id', MediaPlayCountController.updatePlayCount); 
 
 
 //post create new media
@@ -88,6 +91,7 @@ router.post('/StudentLogin', studentLogIn)
 
 router.get("/Students/:id", getStudents)
 router.get("/Student/:id", getStudentDetail)
+router.get("/students/PlayCount/:id", PlayCountController.getPlayCount)
 
 router.delete("/Students/:id", deleteStudents)
 router.delete("/StudentsClass/:id", deleteStudentsByClass)
@@ -96,6 +100,8 @@ router.delete("/Student/:id", deleteStudent)
 router.put("/Student/:id", updateStudent)
 
 router.put('/UpdateExamResult/:id', updateExamResult)
+
+router.put('/UpdateProgessResult/:id', updateProgessResult)
 
 router.put('/StudentAttendance/:id', studentAttendance)
 

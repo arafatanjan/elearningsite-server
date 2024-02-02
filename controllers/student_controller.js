@@ -169,6 +169,33 @@ const updateExamResult = async (req, res) => {
         res.status(500).json(error);
     }
 };
+const updateProgessResult = async (req, res) => {
+    const { subName, marksProgress } = req.body;
+    //console.log(marksProgress)
+
+    try {
+        const student = await Student.findById(req.params.id);
+
+        if (!student) {
+            return res.send({ message: 'Student not found' });
+        }
+
+        const existingResult = student.examResult.find(
+            (result) => result.subName.toString() === subName
+        );
+
+        if (existingResult) {
+            existingResult.marksProgress = marksProgress;
+        } else {
+            student.examResult.push({ subName, marksProgress });
+        }
+
+        const result = await student.save();
+        return res.send(result);
+    } catch (error) {
+        res.status(500).json(error);
+    }
+};
 
 const studentAttendance = async (req, res) => {
     const { subName, status, date } = req.body;
@@ -283,7 +310,7 @@ module.exports = {
     studentAttendance,
     deleteStudentsByClass,
     updateExamResult,
-
+    updateProgessResult,
     clearAllStudentsAttendanceBySubject,
     clearAllStudentsAttendance,
     removeStudentAttendanceBySubject,

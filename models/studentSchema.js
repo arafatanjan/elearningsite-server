@@ -36,9 +36,29 @@ const studentSchema = new mongoose.Schema({
             marksObtained: {
                 type: Number,
                 default: 0
+            },
+            
+            marksProgress: {
+                type: Number,
+                default: 0
             }
+            
         }
     ],
+    // mediaCount: [
+    //     {
+    //         playCount: {
+    //             type: Number, 
+    //             default: 0
+    //            },
+            
+    //         totalCount: {
+    //             type: Number, 
+    //             default: 0
+    //            },
+
+    //     }
+    // ],
     attendance: [{
         date: {
             type: Date,
@@ -55,6 +75,19 @@ const studentSchema = new mongoose.Schema({
             required: true
         }
     }]
+});
+
+// Add a virtual property to automatically populate subName in examResult
+studentSchema.virtual('examResult.subNameRef', {
+    ref: 'subject',
+    localField: 'examResult.subName',
+    foreignField: '_id',
+    justOne: true,
+});
+
+// Apply the virtual property when querying the student model
+studentSchema.pre('find', function() {
+    this.populate('examResult.subNameRef');
 });
 
 module.exports = mongoose.model("student", studentSchema);

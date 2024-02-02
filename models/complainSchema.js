@@ -19,12 +19,15 @@ const complainSchema = new mongoose.Schema({
         ref: 'student',
         required: true,
     }
+},{
+    toJSON: { virtuals: true },
+        toObject: { virtuals: true }
 });
 
 complainSchema.virtual('students', {
      ref: 'student',
      localField: 'user',
-     foreignField: 'student_id',
+     foreignField: '_id',
      justOne: true
    });
 
