@@ -32,6 +32,19 @@ const subjectCreate = async (req, res) => {
     }
 };
 
+// const allStudentSubjects = async (req, res) => {
+//     try {
+//         let subjects = await Subject.find().select('subName subCode');
+//         res.json(subjects) 
+//      }
+//     catch (err) {
+//         res.status(500).json(err);
+//     }
+// };
+
+
+
+
 const allSubjects = async (req, res) => {
     try {
         let subjects = await Subject.find({ school: req.params.id })
@@ -49,8 +62,10 @@ const allSubjects = async (req, res) => {
 const classSubjects = async (req, res) => {
     try {
         let subjects = await Subject.find({ sclassName: req.params.id })
+        //let subjects = await Subject.find({ sclassName: req.params.id })??
         if (subjects.length > 0) {
             res.send(subjects)
+            //console.log(subjects);
         } else {
             res.send({ message: "No subjects found" });
         }
@@ -161,4 +176,4 @@ const deleteSubjectsByClass = async (req, res) => {
 };
 
 
-module.exports = { subjectCreate, freeSubjectList, classSubjects, getSubjectDetail, deleteSubjectsByClass, deleteSubjects, deleteSubject, allSubjects };
+module.exports = { subjectCreate, freeSubjectList, classSubjects, getSubjectDetail, deleteSubjectsByClass, deleteSubjects, deleteSubject, allSubjects,  };

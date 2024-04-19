@@ -28,8 +28,7 @@
 const mongoose = require('mongoose');
 
 const mediaPlayCountSchema = new mongoose.Schema({
-  // videoId: { type: String, required: true },
-  // studentName: { type: String, required: true },
+  
   student_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'student',

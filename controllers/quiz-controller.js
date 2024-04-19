@@ -95,6 +95,7 @@ module.exports.getResult= async function getResult(req, res){
         res.json({ error })
     }
 }
+
 /** post all result */
 // module.exports.storeResult= function storeResult(req, res){
 //     try {
@@ -116,6 +117,9 @@ module.exports.getResult= async function getResult(req, res){
 module.exports.storeResult=async function storeResult(req, res) {
   try {
     const {property, username, result, attempts, points, achieved } = req.body;
+    //const student_Id = req.params.id;
+    const studentId = req.params.id;
+
 
     // Check if result is provided
     if (!result) {
@@ -124,6 +128,7 @@ module.exports.storeResult=async function storeResult(req, res) {
 
     // Create an object with the data to be saved
     const resultData = {
+      student_id: studentId,
       property,
       username,
       result,

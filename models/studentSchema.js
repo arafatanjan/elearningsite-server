@@ -41,6 +41,10 @@ const studentSchema = new mongoose.Schema({
             marksProgress: {
                 type: Number,
                 default: 0
+            },
+            QuizAvg: {
+                type: Number,
+                default: 0
             }
             
         }

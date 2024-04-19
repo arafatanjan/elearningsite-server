@@ -90,6 +90,20 @@ const getStudentDetail = async (req, res) => {
         res.status(500).json(err);
     }
 }
+const getAllStudentDetail = async (req, res) => {
+    try {
+        let student = await Student.find();
+            
+        if (student) {
+            res.json(student);
+        }
+        else {
+            res.send({ message: "No student found" });
+        }
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
 
 const deleteStudent = async (req, res) => {
     try {
@@ -194,6 +208,34 @@ const updateProgessResult = async (req, res) => {
         return res.send(result);
     } catch (error) {
         res.status(500).json(error);
+    }
+};
+
+const updateQuizResult = async (req, res) => {
+    const { subName, QuizAvg } = req.body;
+
+ try {
+        const student = await Student.findById(req.params.id);
+
+        if (!student) {
+            return res.send({ message: 'Student not found' });
+        }
+
+        const existingResult = student.examResult.find(
+            (result) => result.subName.toString() === subName   
+        );
+
+        if (existingResult) {
+            existingResult.QuizAvg = QuizAvg;
+        } else {
+            student.examResult.push({ subName, QuizAvg });
+        }
+
+        const result = await student.save();
+        return res.send(result);
+    } catch (error) {
+        res.status(600).json(error);
+        console.log(error)
     }
 };
 
@@ -315,4 +357,6 @@ module.exports = {
     clearAllStudentsAttendance,
     removeStudentAttendanceBySubject,
     removeStudentAttendance,
+    updateQuizResult,
+    getAllStudentDetail
 };

@@ -1,5 +1,6 @@
 //const Media = require("../Models/Media");
 const Media = require("../models/MediaSchema");
+//const ftp = require('basic-ftp');
 
 exports.getAll = async (req, res) => {
   try {
@@ -13,10 +14,12 @@ exports.getAll = async (req, res) => {
     res.status(400).json(error);
   }
 };
+
 // Backendurl/public/videos/file_name.mp4
 exports.create = async (req, res) => {
+
   console.log(req.files);
-  const { name } = req.body;
+  const { name, semester, year, course, category } = req.body;
   
   let videosPaths = [];
 
@@ -27,10 +30,27 @@ exports.create = async (req, res) => {
       //console.log(req.files);
      }
   }
-
+  //const client = new ftp.Client();
   try {
+
+    // await client.access({
+    //   host: '203.76.98.229',
+    //   user: 'elms',
+    //   password: 'Nothing69',
+    //   secure: false, // Set to true if FTP server supports FTPS
+    // });
+
+    // // Upload each video file to the FTP server
+    // for (let videoPath of videosPaths) {
+    //   await client.uploadFrom(videoPath, path.basename(videoPath));
+    // }
+
+    // res.status(200).send('File uploaded successfully');
+
     const createdMedia = await Media.create({
       name,
+      course, 
+      category,
       videos: videosPaths,
     });
 
@@ -39,4 +59,7 @@ exports.create = async (req, res) => {
     //console.log(error);
     res.status(400).json(error);
   }
+  // finally {
+  //   client.close();
+  // }
 };

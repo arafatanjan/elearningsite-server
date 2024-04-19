@@ -20,10 +20,12 @@ const {
     deleteStudentsByClass,
     updateExamResult,
     updateProgessResult,
+    updateQuizResult,
     clearAllStudentsAttendanceBySubject,
     clearAllStudentsAttendance,
     removeStudentAttendanceBySubject,
-    removeStudentAttendance } = require('../controllers/student_controller.js');
+    removeStudentAttendance,
+    getAllStudentDetail } = require('../controllers/student_controller.js');
     
 const { subjectCreate, classSubjects, deleteSubjectsByClass, getSubjectDetail, deleteSubject, freeSubjectList, allSubjects, deleteSubjects } = require('../controllers/subject-controller.js');
 const { teacherRegister, teacherLogIn, getTeachers, getTeacherDetail, deleteTeachers, deleteTeachersByClass, deleteTeacher, updateTeacherSubject, teacherAttendance } = require('../controllers/teacher-controller.js');
@@ -44,7 +46,7 @@ router.post(
   ([
     {
       name: "videos",
-      maxCount: 5,
+      maxCount: 10,
     },
   ]),
   mediaController.create
@@ -103,6 +105,8 @@ router.put('/UpdateExamResult/:id', updateExamResult)
 
 router.put('/UpdateProgessResult/:id', updateProgessResult)
 
+router.put('/updateQuizResult/:id',updateQuizResult) 
+
 router.put('/StudentAttendance/:id', studentAttendance)
 
 router.put('/RemoveAllStudentsSubAtten/:id', clearAllStudentsAttendanceBySubject);
@@ -118,6 +122,8 @@ router.post('/TeacherLogin', teacherLogIn)
 
 router.get("/Teachers/:id", getTeachers)
 router.get("/Teacher/:id", getTeacherDetail)
+router.get("/teacher/student/getAllStudent", getAllStudentDetail)
+
 
 router.delete("/Teachers/:id", deleteTeachers)
 router.delete("/TeachersClass/:id", deleteTeachersByClass)
@@ -159,7 +165,7 @@ router.delete("/Sclass/:id", deleteSclass)
 // Subject
 
 router.post('/SubjectCreate', subjectCreate);
-
+//router.get('/Students/AllSubjects', allStudentSubjects);
 router.get('/AllSubjects/:id', allSubjects);
 router.get('/ClassSubjects/:id', classSubjects);
 router.get('/FreeSubjectList/:id', freeSubjectList);
@@ -181,13 +187,13 @@ router.route('/questions')
 .get(quizController.getQuestions) /** GET Request */
 .post(quizController.insertQuestions) /** POST Request */       
 .delete(quizController.dropQuestions) /** DELETE Request */
-// export default router;
 
 
 router.route('/result')
 .get(quizController.getResult)
-.post(quizController.storeResult)
 .delete(quizController.dropResult)
+
+router.route('/result/:id').post(quizController.storeResult)
 
 
 module.exports = router;
