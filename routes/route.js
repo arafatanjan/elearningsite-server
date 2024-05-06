@@ -25,15 +25,19 @@ const {
     clearAllStudentsAttendance,
     removeStudentAttendanceBySubject,
     removeStudentAttendance,
-    getAllStudentDetail } = require('../controllers/student_controller.js');
+    getAllStudentDetail,
+    putAllStudentDetail,
+    getFinalStudentDetail } = require('../controllers/student_controller.js');
     
 const { subjectCreate, classSubjects, deleteSubjectsByClass, getSubjectDetail, deleteSubject, freeSubjectList, allSubjects, deleteSubjects } = require('../controllers/subject-controller.js');
 const { teacherRegister, teacherLogIn, getTeachers, getTeacherDetail, deleteTeachers, deleteTeachersByClass, deleteTeacher, updateTeacherSubject, teacherAttendance } = require('../controllers/teacher-controller.js');
 const quizController = require('../controllers/quiz-controller.js');
 const mediaController = require("../controllers/media-controller.js");
+const questionController = require("../controllers/question-controller.js");
 const MediaPlayCountController = require("../controllers/MediaPlayCountController.js");
 const PlayCountController = require("../controllers/PlayCountController.js");
 const upload = require('../middleware/upload.js');
+const uploadQuestions = require('../middleware/uploadQuestions.js');
 
 
   //get all media
@@ -52,29 +56,37 @@ router.post(
   mediaController.create
 );
 
+//post create new pdf
+router.post(
+  "/api/v1/question/create",
+  uploadQuestions.fields
+  ([
+    {
+      name: "pdfs",
+      maxCount: 10,
+    },
+  ]),
+  questionController.create
+);
+//router.post('/api/v1/question/create', uploadQuestions.single('pdf'), questionController.create);
+
+// router.post(
+//   "/api/v1/question/create",
+//   uploadQuestions.fields
+//   ([
+//     {
+//       name: "questions",
+//       maxCount: 10,
+//     },
+//   ]),
+//   questionController.create
+// );
+
+//get all media
+router.get("/api/v1/question/all", questionController.getAll);
+
 //put playcount
 router.put('/updatePlayCount/:id', MediaPlayCountController.updatePlayCount); 
-
-
-//post create new media
-// router.post(
-//   "/create",
-//   upload?.fields([
-//     {
-//       name: "videos",
-//       maxCount: 5,
-//     },
-//   ]),(req, res) => {
-//     if (req.file) {
-//       // If the file is successfully uploaded, you can access it using req.file
-//       res.status(200).json({ message: 'File uploaded successfully', file: req.file });
-//     } else {
-//       // Handle the case where the file upload failed
-//       res.status(400).json({ message: 'File upload failed' });
-//   }
-// },
-//   mediaController.create
-// );
 
 
 // Admin
@@ -93,6 +105,7 @@ router.post('/StudentLogin', studentLogIn)
 
 router.get("/Students/:id", getStudents)
 router.get("/Student/:id", getStudentDetail)
+router.get("/Student/suggestion/:id", getFinalStudentDetail)
 router.get("/students/PlayCount/:id", PlayCountController.getPlayCount)
 
 router.delete("/Students/:id", deleteStudents)
@@ -132,6 +145,7 @@ router.delete("/Teacher/:id", deleteTeacher)
 router.put("/TeacherSubject", updateTeacherSubject)
 
 router.post('/TeacherAttendance/:id', teacherAttendance)
+router.post('/Teacher/class/evaluationform', putAllStudentDetail)
 
 // Notice
 
@@ -165,6 +179,7 @@ router.delete("/Sclass/:id", deleteSclass)
 // Subject
 
 router.post('/SubjectCreate', subjectCreate);
+
 //router.get('/Students/AllSubjects', allStudentSubjects);
 router.get('/AllSubjects/:id', allSubjects);
 router.get('/ClassSubjects/:id', classSubjects);
@@ -197,3 +212,25 @@ router.route('/result/:id').post(quizController.storeResult)
 
 
 module.exports = router;
+
+
+
+//post create new media
+// router.post(
+//   "/create",
+//   upload?.fields([
+//     {
+//       name: "videos",
+//       maxCount: 5,
+//     },
+//   ]),(req, res) => {
+//     if (req.file) {
+//       // If the file is successfully uploaded, you can access it using req.file
+//       res.status(200).json({ message: 'File uploaded successfully', file: req.file });
+//     } else {
+//       // Handle the case where the file upload failed
+//       res.status(400).json({ message: 'File upload failed' });
+//   }
+// },
+//   mediaController.create
+// );

@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const Student = require('../models/studentSchema.js');
 const Subject = require('../models/subjectSchema.js');
+const FinalStudent = require('../models/finalstudentSchema.js');
 
 const studentRegister = async (req, res) => {
     try {
@@ -92,7 +93,7 @@ const getStudentDetail = async (req, res) => {
 }
 const getAllStudentDetail = async (req, res) => {
     try {
-        let student = await Student.find();
+        let student = await Student.find().populate("attendance.subName", "subName sessions");
             
         if (student) {
             res.json(student);
@@ -239,6 +240,70 @@ const updateQuizResult = async (req, res) => {
     }
 };
 
+//?? putAllStudentDetail
+const putAllStudentDetail = async (req, res) => {
+    try {
+        const students = req.body; // Assuming req.body is an array of student objects
+        console.log( req.body)
+        // Iterate through each student object in the array
+        for (const student of students) {
+            const {
+                _id,
+                name,
+                rollNum,
+                school,
+                teachSubject_id,
+                teachSubject_subName,
+                sclassName,
+                examResult,
+                attendancePercentage,
+                attendanceNewMarks
+            } = student;
+
+            const existingStudent = await FinalStudent.findOne({
+                Student_id: _id,
+                school: school,
+                teachSubject_id: teachSubject_id
+            });
+
+            if (existingStudent) {
+                // Update existing student details
+                existingStudent.name = name;
+                existingStudent.rollNum = rollNum;
+                existingStudent.teachSubject_subName = teachSubject_subName;
+                existingStudent.examResult = examResult; // Assign the entire examResult array
+                existingStudent.attendancePercentage = parseFloat(attendancePercentage); // Parse attendancePercentage as a Number
+                existingStudent.attendanceNewMarks = parseFloat(attendanceNewMarks); // Parse attendanceNewMarks as a Number
+
+                // Save the updated student details
+                await existingStudent.save();
+            } else {
+                // Create a new student record if it doesn't exist
+                const newStudent = new FinalStudent({
+                    Student_id: _id,
+                    name,
+                    rollNum,
+                    school,
+                    teachSubject_id,
+                    teachSubject_subName,
+                    sclassName,
+                    examResult,
+                    attendancePercentage: parseFloat(attendancePercentage), // Parse attendancePercentage as a Number
+                    attendanceNewMarks: parseFloat(attendanceNewMarks) // Parse attendanceNewMarks as a Number
+                });
+
+                // Save the new student record
+                await newStudent.save();
+            }
+        }
+
+        res.status(200).json({ message: 'Students updated/created successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
 const studentAttendance = async (req, res) => {
     const { subName, status, date } = req.body;
 
@@ -340,6 +405,30 @@ const removeStudentAttendance = async (req, res) => {
     }
 };
 
+const getFinalStudentDetail = async (req, res) => {
+    try {
+        // Retrieve the student by sclassName from the request parameters
+        //const { sclassName_id } = req.params;
+        //console.log(req.params.id); // Debugging: Log the value of sclassName_id
+
+        // Use the correct field name from your Mongoose schema (e.g., sclassName)
+        let student = await FinalStudent.find({ sclassName: req.params.id });
+        
+        if (student) {
+            // If student is found, send the student details in the response
+            res.send(student);
+        } else {
+            // If no student is found with the specified _id, send a message indicating so
+            res.send({ message: "No student found" });
+        }
+    } catch (err) {
+        // Handle any errors that occur during the database operation
+        res.status(500).json(err);
+    }
+};
+
+
+
 
 module.exports = {
     studentRegister,
@@ -358,5 +447,7 @@ module.exports = {
     removeStudentAttendanceBySubject,
     removeStudentAttendance,
     updateQuizResult,
-    getAllStudentDetail
+    getAllStudentDetail,
+    putAllStudentDetail,
+    getFinalStudentDetail
 };
